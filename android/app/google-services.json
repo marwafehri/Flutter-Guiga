@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "320475539179",
+    "project_id": "dr-bilel-guiga",
+    "storage_bucket": "dr-bilel-guiga.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:320475539179:android:f847fa7412f5531de840ae",
+        "android_client_info": {
+          "package_name": "com.shahanaj.woocommerce_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHMAvciCdsim4n1FFYws_jjvRvFMB8CA4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
