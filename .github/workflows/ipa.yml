@@ -1,29 +1,66 @@
-name: Build and distribute
+name: "Build iOS"
 
 on:
+  pull_request:
+    branches:
+      - main
+      - master
   push:
     branches:
       - main
+      - master
+      - develop
 
 jobs:
-  build:
-    name: build
+  flutter_test:
+    name: Run flutter test and analyze
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v1
+        with:
+          flutter-version: '3.16.9'  # Assurez-vous que la version de Flutter est correcte
+      - name: Get dependencies
+        run: flutter pub get
+      - name: Analyze code
+        run: flutter analyze
+      - name: Run tests
+        run: flutter test
+
+  build_ios:
+    name: Build Flutter (iOS)
+    needs: [flutter_test]
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v2
-
-      - uses: cedvdb/action-flutter-build-ios@v1
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v1
         with:
-          # always use --export-options-plist=ios/GithubActionsExportOptions.plist
-          build-cmd: flutter build ipa --release --flavor dev --export-options-plist=ios/GithubActionsExportOptions.plist
-          certificate-base64: ${{ secrets.IOS_BUILD_CERTIFICATE_BASE64 }}
-          certificate-password: ${{ secrets.IOS_BUILD_CERTIFICATE_PASSWORD }}
-          provisioning-profile-base64: ${{ secrets.IOS_MOBILE_PROVISIONING_PROFILE_BASE64 }}
-          keychain-password: ${{ secrets.IOS_GITHUB_KEYCHAIN_PASSWORD }}
+          flutter-version: '3.16.9'  # Assurez-vous que la version de Flutter est correcte
+      - name: Get dependencies
+        run: flutter pub get
+      - name: Clean project
+        run: flutter clean
+      - name: Build iOS
+        run: flutter build ios
 
-      - name: Archive IPA
-        uses: actions/upload-artifact@v2
+  build_appbundle:
+    name: Build Flutter (Android)
+    needs: [flutter_test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v1
         with:
-          name: release-ipa
-          # Try running the build locally with the build command to be sure of this path
-          path: build/ios/ipa/App-dev.ipa
+          flutter-version: '3.16.9'  # Assurez-vous que la version de Flutter est correcte
+      - name: Get dependencies
+        run: flutter pub get
+      - name: Clean project
+        run: flutter clean
+      - name: Build app bundle
+        run: flutter build appbundle
