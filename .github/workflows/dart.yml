@@ -27,9 +27,20 @@ jobs:
           flutter pub get
 
       - name: Set iOS platform in Podfile
-        run: echo "platform :ios, '12.0'" >> ios/Podfile
+        run: |
+          echo "platform :ios, '12.0'" >> ios/Podfile
+          echo "target 'Runner' do" >> ios/Podfile
+          echo "  use_frameworks!" >> ios/Podfile
+          echo "  pod 'Firebase/Core'" >> ios/Podfile
+          echo "  target 'Runner' do" >> ios/Podfile
+          echo "    inherit! :search_paths" >> ios/Podfile
+          echo "  end" >> ios/Podfile
+          echo "end" >> ios/Podfile
 
       - run: pod repo update
+        working-directory: ios
+
+      - run: pod install
         working-directory: ios
 
       - run: flutter build ios --release --no-codesign
