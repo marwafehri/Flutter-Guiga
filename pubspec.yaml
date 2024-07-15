@@ -30,7 +30,7 @@ dependencies:
   http: any
   collection: ^1.17.2
   flutter_form_builder: ^9.1.1
-  intl: ^0.18.1
+  intl: ^0.19.0
   form_builder_validators: ^9.1.0
   flutter_login: ^5.0.0
   dio: ^5.4.0
