@@ -15,7 +15,17 @@ jobs:
         with:
           channel: "stable"
           architecture: x64
-      - run: flutter pub get
+
+      - name: Upgrade Flutter dependencies
+        run: |
+          flutter pub upgrade --major-versions
+          flutter pub get
+
+      - name: Regenerate Podfile
+        run: |
+          rm ios/Podfile
+          flutter pub get
+
       - run: pod repo update
         working-directory: ios
 
@@ -24,7 +34,7 @@ jobs:
       - run: mkdir Payload
         working-directory: build/ios/iphoneos
 
-      - run: mv Runner.app/ Payload
+      - run: mv Runner.app Payload/
         working-directory: build/ios/iphoneos  
 
       - name: Upload binaries to release
