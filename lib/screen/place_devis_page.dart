@@ -39,7 +39,7 @@ class PlaceDevisPageState extends State<PlaceDevisPage> {
   @override
   void initState() {
     super.initState();
-    WebView.platform = SurfaceAndroidWebView();
+   // WebView.platform = SurfaceAndroidWebView();
     fetchHtmlContent();
 
     // Load user ID when the widget is initialized
