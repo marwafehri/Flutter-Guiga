@@ -107,21 +107,22 @@ class PlaceDevisPageState extends State<PlaceDevisPage> {
       // _submitFiles(); No need to call here
     }
   }
-void _injectJavaScript() async {
-    await controller.runJavascript('''
-    console.log("1111");
-    document.querySelector('input[type="file"]').addEventListener('click', function(event) {
-      event.preventDefault();
-      FileUploadChannel.postMessage("upload-photos");
-    });
+//void _injectJavaScript() async {
+Future<void> _injectJavaScript() async {
+    await controller.evaluateJavascript('''
+      console.log("1111");
+      document.querySelector('input[type="file"]').addEventListener('click', function(event) {
+        event.preventDefault();
+        window.FileUploadChannel.postMessage("upload-photos");
+      });
 
-    document.querySelector('form').addEventListener('submit', function(event) {
-      event.preventDefault();
-      var postTitle = this.elements.post_title.value;
-      FormSubmissionChannel.postMessage(postTitle);
-      console.log("Form submission intercepted");
-    });
-  ''');
+      document.querySelector('form').addEventListener('submit', function(event) {
+        event.preventDefault();
+        var postTitle = this.elements.post_title.value;
+        window.FormSubmissionChannel.postMessage(postTitle);
+        console.log("Form submission intercepted");
+      });
+    ''');
   }
  /* void _injectJavaScript() async {
     await controller.evaluateJavascript('''
@@ -446,7 +447,8 @@ void _injectJavaScript() async {
                 onPageFinished: (String url) async {
                   print('Page finished loading: $url');
                   await _fillEmailField(); // Call the method here
-                  _injectJavaScript(); // Inject JavaScript
+                 // _injectJavaScript(); // Inject JavaScript
+                  await _injectJavaScript();
                   setState(() {
                     _isLoading = false;
                   });
