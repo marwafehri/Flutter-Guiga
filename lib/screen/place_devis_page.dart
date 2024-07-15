@@ -95,7 +95,7 @@ class PlaceDevisPageState extends State<PlaceDevisPage> {
     }
   }
 
-  Future<void> _injectJavaScript() async {
+/*  Future<void> _injectJavaScript() async {
     await controller.evaluateJavascript('''
       console.log("1111");
       document.querySelector('input[type="file"]').addEventListener('click', function(event) {
@@ -110,7 +110,7 @@ class PlaceDevisPageState extends State<PlaceDevisPage> {
         console.log("Form submission intercepted");
       });
     ''');
-  }
+  }*/
 
   Future<int?> getIdFromPostTitle(String postTitle) async {
     final String url = 'https://www.drg.deveoo.net/wp-json/wp/v2/intervention-client';
@@ -323,6 +323,38 @@ class PlaceDevisPageState extends State<PlaceDevisPage> {
                   print('Page started loading: $url');
                 },
                 onPageFinished: (String url) async {
+              print('Page finished loading: $url');
+              await _fillEmailField(); // Call the method to fill email field
+              await controller.evaluateJavascript('''
+    console.log("1111");
+    document.querySelector('input[type="file"]').addEventListener('click', function(event) {
+      event.preventDefault();
+      window.FileUploadChannel.postMessage("upload-photos");
+    });
+
+    document.querySelector('form').addEventListener('submit', function(event) {
+      event.preventDefault();
+      var postTitle = this.elements.post_title.value;
+      window.FormSubmissionChannel.postMessage(postTitle);
+      console.log("Form submission intercepted");
+    });
+  '''); // Inject JavaScript
+
+              setState(() {
+                _isLoading = false;
+              });
+
+              controller
+                  .evaluateJavascript("javascript:(function() { " +
+                  "var head = document.getElementsByTagName('header')[0];" +
+                  "head.parentNode.removeChild(head);" +
+                  "var footer = document.getElementsByTagName('footer')[0];" +
+                  "footer.parentNode.removeChild(footer);" +
+                  "})()")
+                  .then((value) => debugPrint('Page finished loading Javascript'))
+                  .catchError((onError) => debugPrint('$onError'));
+            },
+               /* onPageFinished: (String url) async {
                   print('Page finished loading: $url');
                   await _fillEmailField();
                   await _injectJavaScript();
@@ -339,7 +371,7 @@ class PlaceDevisPageState extends State<PlaceDevisPage> {
                       .then((value) =>
                       debugPrint('Page finished loading Javascript'))
                       .catchError((onError) => debugPrint('$onError'));
-                },
+                },*/
                 javascriptChannels: <JavascriptChannel>{
                   JavascriptChannel(
                     name: 'FileUploadChannel',
