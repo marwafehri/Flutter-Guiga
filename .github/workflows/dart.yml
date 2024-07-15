@@ -26,6 +26,9 @@ jobs:
           rm ios/Podfile
           flutter pub get
 
+      - name: Set iOS platform in Podfile
+        run: echo "platform :ios, '12.0'" >> ios/Podfile
+
       - run: pod repo update
         working-directory: ios
 
