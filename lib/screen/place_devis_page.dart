@@ -107,8 +107,23 @@ class PlaceDevisPageState extends State<PlaceDevisPage> {
       // _submitFiles(); No need to call here
     }
   }
+void _injectJavaScript() async {
+    await controller.runJavascript('''
+    console.log("1111");
+    document.querySelector('input[type="file"]').addEventListener('click', function(event) {
+      event.preventDefault();
+      FileUploadChannel.postMessage("upload-photos");
+    });
 
-  void _injectJavaScript() async {
+    document.querySelector('form').addEventListener('submit', function(event) {
+      event.preventDefault();
+      var postTitle = this.elements.post_title.value;
+      FormSubmissionChannel.postMessage(postTitle);
+      console.log("Form submission intercepted");
+    });
+  ''');
+  }
+ /* void _injectJavaScript() async {
     await controller.evaluateJavascript('''
     console.log("1111");
       document.querySelector('input[type="file"]').addEventListener('click', function(event) {
@@ -123,7 +138,7 @@ class PlaceDevisPageState extends State<PlaceDevisPage> {
         console.log("Form submission intercepted");
       });
     ''');
-  }
+  }*/
   Future<int?> getIdFromPostTitle(String postTitle) async {
     print(postTitle);
     final String url =
