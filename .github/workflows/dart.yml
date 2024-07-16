@@ -18,7 +18,6 @@ jobs:
 
       - name: Upgrade Flutter dependencies
         run: |
-          flutter pub upgrade --major-versions
           flutter pub get
 
       - name: Regenerate Podfile
