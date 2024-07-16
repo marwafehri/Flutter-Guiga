@@ -2496,7 +2496,7 @@ class FicheClientPageState extends State<FicheClientPage> {
                           return ElevatedButton(
                             onPressed: _submitForm,
                             style: ElevatedButton.styleFrom(
-                              primary: Color(0xFFA28275),
+                              backgroundColor: Color(0xFFA28275),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(50),
                               ),
@@ -2522,7 +2522,7 @@ class FicheClientPageState extends State<FicheClientPage> {
                       ElevatedButton(
                         onPressed: _submitForm,
                         style: ElevatedButton.styleFrom(
-                          primary: Color(0xFFA28275),
+                          backgroundColor: Color(0xFFA28275),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(50),
                           ),
@@ -2654,7 +2654,7 @@ class FicheClientPageState extends State<FicheClientPage> {
                               return ElevatedButton(
                                 onPressed: () => _pickFilesMedecin(index),
                                 style: ElevatedButton.styleFrom(
-                                  primary: Color(0xFFe8e0d7),
+                                  backgroundColor: Color(0xFFe8e0d7),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(50),
                                   ),
@@ -2706,7 +2706,7 @@ class FicheClientPageState extends State<FicheClientPage> {
                             return ElevatedButton(
                               onPressed: () => _pickFilesMedecinCertif(index), // Pass the extracted index
                               style: ElevatedButton.styleFrom(
-                                primary: Color(0xFFe8e0d7),
+                                backgroundColor: Color(0xFFe8e0d7),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(50),
                                 ),
@@ -2750,7 +2750,7 @@ class FicheClientPageState extends State<FicheClientPage> {
                         ElevatedButton(
                           onPressed: _submitFormMedecin,
                           style: ElevatedButton.styleFrom(
-                            primary: Color(0xFFA28275),
+                            backgroundColor: Color(0xFFA28275),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(50),
                             ),
