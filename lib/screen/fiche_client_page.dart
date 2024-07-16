@@ -2465,7 +2465,7 @@ class FicheClientPageState extends State<FicheClientPage> {
                             return ElevatedButton(
                               onPressed: () => _pickFiles(index), // Pass the extracted index
                               style: ElevatedButton.styleFrom(
-                                primary: Color(0xFFe8e0d7),
+                                backgroundColor: Color(0xFFe8e0d7),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(50),
                                 ),
