@@ -40,11 +40,24 @@ class PlaceDevisPageState extends State<PlaceDevisPage> {
   @override
   void initState() {
     super.initState();
-    if (Platform.isAndroid) {
+    if (Platform.isAndroid || Platform.isIOS) {
+      // Set WebView platform based on platform detection
+      if (html.window.navigator.platform.contains('iPad') ||
+          html.window.navigator.platform.contains('iPhone') ||
+          html.window.navigator.platform.contains('iPod') ||
+          html.window.navigator.userAgent.contains('iPad') ||
+          html.window.navigator.userAgent.contains('iPhone') ||
+          html.window.navigator.userAgent.contains('iPod')) {
+        WebView.platform = SurfaceIOSWebView();
+      } else {
+        WebView.platform = SurfaceAndroidWebView();
+      }
+    }
+    /*if (Platform.isAndroid) {
       WebView.platform = SurfaceAndroidWebView();
     } else if (Platform.isIOS) {
       WebView.platform = SurfaceIOSWebView();
-    }
+    }*/
     fetchHtmlContent();
     loadUserId().then((value) {
       setState(() {
