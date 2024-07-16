@@ -173,7 +173,7 @@ class PlaceDevisPageState extends State<PlaceDevisPage> {
     }
   }
 
-  Future<void> _fillEmailField() async {
+/*  Future<void> _fillEmailField() async {
     await controller.runJavascript('''
       var user_email = "$email";
       var first_name = "$first_name";
@@ -240,7 +240,7 @@ class PlaceDevisPageState extends State<PlaceDevisPage> {
          naissanceInput.readOnly = true;
       } 
   ''');
-  }
+  }*/
 
   Future<void> _submitFiles(int idintervention) async {
     print("_submitFiles Future");
@@ -371,7 +371,7 @@ class PlaceDevisPageState extends State<PlaceDevisPage> {
                 },
                 onPageFinished: (String url) async {
                   print('Page finished loading: $url');
-                  await _fillEmailField(); // Call the method here
+                 // await _fillEmailField(); // Call the method here
                  // _injectJavaScript(); // Inject JavaScript
                   setState(() {
                     _isLoading = false;
