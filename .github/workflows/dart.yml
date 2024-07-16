@@ -1,6 +1,6 @@
 name: "iOS-ipa-build"
 
-on: 
+on:
   workflow_dispatch:
 
 jobs:
@@ -18,8 +18,7 @@ jobs:
           architecture: x64
 
       - name: Upgrade Flutter dependencies
-        run: |
-          flutter pub get
+        run: flutter pub get
 
       - name: Regenerate Podfile
         run: |
@@ -32,6 +31,7 @@ jobs:
           echo "target 'Runner' do" >> ios/Podfile
           echo "  use_frameworks!" >> ios/Podfile
           echo "  pod 'Firebase/Core'" >> ios/Podfile
+          echo "  pod 'file_picker', :path => '../'" >> ios/Podfile
           echo "end" >> ios/Podfile
 
       - run: pod repo update
