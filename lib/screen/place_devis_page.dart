@@ -40,10 +40,9 @@ class PlaceDevisPageState extends State<PlaceDevisPage> {
   @override
   void initState() {
     super.initState();
-    // if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
     if (Platform.isAndroid) {
       WebView.platform = SurfaceAndroidWebView();
-     } else if (Platform.isIOS) {
+    } else if (Platform.isIOS) {
       WebView.platform = SurfaceIOSWebView();
     }
     fetchHtmlContent();
