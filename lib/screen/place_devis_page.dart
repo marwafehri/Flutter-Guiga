@@ -111,12 +111,12 @@ class PlaceDevisPageState extends State<PlaceDevisPage> {
     await controller.runJavascript('''
     console.log("1111");
       document.querySelector('input[type="file"]').addEventListener('click', function(event) {
-        event.preventDefault();
+        // event.preventDefault();
         FileUploadChannel.postMessage("upload-photos");
       });
 
       document.querySelector('form').addEventListener('submit', function(event) {
-        event.preventDefault();
+        // event.preventDefault();
         var postTitle = this.elements.post_title.value;
         FormSubmissionChannel.postMessage(postTitle);
         console.log("Form submission intercepted");
