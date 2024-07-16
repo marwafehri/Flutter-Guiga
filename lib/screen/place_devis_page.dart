@@ -107,7 +107,7 @@ class PlaceDevisPageState extends State<PlaceDevisPage> {
     }
   }
 
-  void _injectJavaScript() async {
+/*  void _injectJavaScript() async {
     await controller.runJavascript('''
     console.log("1111");
       document.querySelector('input[type="file"]').addEventListener('click', function(event) {
@@ -122,7 +122,7 @@ class PlaceDevisPageState extends State<PlaceDevisPage> {
         console.log("Form submission intercepted");
       });
     ''');
-  }
+  }*/
 
   Future<int?> getIdFromPostTitle(String postTitle) async {
     print(postTitle);
