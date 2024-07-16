@@ -2,9 +2,10 @@ name: "iOS-ipa-build"
 
 on:
   workflow_dispatch:
+
 jobs:
   build-ios-and-android:
-    name: iOS and Android Build
+    name: iOS Build
     runs-on: macos-latest
 
     steps:
@@ -28,6 +29,7 @@ jobs:
           echo "target 'Runner' do" >> ios/Podfile
           echo "  use_frameworks!" >> ios/Podfile
           echo "  pod 'Firebase/Core'" >> ios/Podfile
+          echo "  pod 'file_picker', :path => '../.symlinks/plugins/file_picker/ios'" >> ios/Podfile
           echo "end" >> ios/Podfile
 
       - run: pod repo update
