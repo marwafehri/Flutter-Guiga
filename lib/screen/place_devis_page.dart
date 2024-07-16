@@ -387,7 +387,7 @@ class PlaceDevisPageState extends State<PlaceDevisPage> {
                       debugPrint('Page finished loading Javascript'))
                       .catchError((onError) => debugPrint('$onError'));
                 },
-                javascriptChannels: <JavascriptChannel>{
+               /* javascriptChannels: <JavascriptChannel>{
                   JavascriptChannel(
                     name: 'FileUploadChannel',
                     onMessageReceived: (JavascriptMessage message) {
@@ -402,7 +402,7 @@ class PlaceDevisPageState extends State<PlaceDevisPage> {
                       handleFormSubmission(message.message); // Handle form submission here
                     },
                   ),
-                },
+                },*/
               ),
             ),
             if (_isLoading)
