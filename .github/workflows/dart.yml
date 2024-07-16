@@ -20,19 +20,9 @@ jobs:
       - name: Upgrade Flutter dependencies
         run: flutter pub get
 
-      - name: Regenerate Podfile
+      - name: Ensure iOS platform in Podfile
         run: |
-          rm ios/Podfile
-          flutter pub get
-
-      - name: Set iOS platform in Podfile
-        run: |
-          echo "platform :ios, '12.0'" > ios/Podfile
-          echo "target 'Runner' do" >> ios/Podfile
-          echo "  use_frameworks!" >> ios/Podfile
-          echo "  pod 'Firebase/Core'" >> ios/Podfile
-          echo "  pod 'file_picker', :path => '../'" >> ios/Podfile
-          echo "end" >> ios/Podfile
+          sed -i '' 's/platform :ios, .*/platform :ios, '12.0'/' ios/Podfile
 
       - run: pod repo update
         working-directory: ios
@@ -52,7 +42,7 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: build/ios/iphoneos/Payload/Runner.app
+          file: Payload/Runner.app
           tag: v1.0
           overwrite: true
           body: "This is the first release"
