@@ -25,7 +25,9 @@ jobs:
 
       - name: Ensure iOS platform in Podfile
         run: |
-          echo "platform :ios, '12.0'" > ios/Podfile
+          if grep -q "#platform :ios" ios/Podfile; then
+            sed -i '' 's/#platform :ios/platform :ios, '\''12.0'\''/' ios/Podfile
+          fi
           echo "target 'Runner' do" >> ios/Podfile
           echo "  use_frameworks!" >> ios/Podfile
           echo "  pod 'Firebase/Core'" >> ios/Podfile
