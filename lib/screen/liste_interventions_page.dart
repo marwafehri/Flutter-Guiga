@@ -223,7 +223,7 @@ class ListeInterventionsPageState extends State<ListeInterventionsPage> {
                                             );
                                           },
                                           style: ElevatedButton.styleFrom(
-                                            primary: Color(0xFFA28275),
+                                            backgroundColor: Color(0xFFA28275),
                                             shape: RoundedRectangleBorder(
                                               borderRadius: BorderRadius.circular(50),
                                             ),
