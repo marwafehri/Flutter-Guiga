@@ -29,6 +29,7 @@ jobs:
           echo "target 'Runner' do" >> ios/Podfile
           echo "  use_frameworks!" >> ios/Podfile
           echo "  pod 'Firebase/Core'" >> ios/Podfile
+          echo "  pod 'file_picker', :path => '../'" >> ios/Podfile
           echo "end" >> ios/Podfile
 
       - run: pod repo update
