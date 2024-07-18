@@ -56,6 +56,8 @@ target 'Runner' do
     File.symlink(p[:path], symlink)
     pod p[:name], :path => File.join(symlink, 'ios')
   }
+
+  flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 end
 
 # Prevent Cocoapods from embedding a second Flutter framework and causing an error with the new Xcode build system.
