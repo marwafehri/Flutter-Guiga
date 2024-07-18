@@ -36,19 +36,16 @@ def parse_KV_file(file, separator='=')
 end
 
 target 'Runner' do
-  use_frameworks!
+  use_frameworks!  # Add this line to use dynamic frameworks
 
-  # Prepare symlinks folder. We use symlinks to avoid having Podfile.lock
-  # referring to absolute paths on developers' machines.
-  system('rm -rf .symlinks')
-  system('mkdir -p .symlinks/plugins')
+  # Other configurations...
 
-  # Flutter Pods
+  # Flutter Pods setup
   generated_xcode_build_settings = parse_KV_file('./Flutter/Generated.xcconfig')
   if generated_xcode_build_settings.empty?
     puts "Generated.xcconfig must exist. If you're running pod install manually, make sure flutter pub get is executed first."
   end
-  generated_xcode_build_settings.map { |p|
+  generated_xcode_build_settings.each { |p|
     if p[:name] == 'FLUTTER_FRAMEWORK_DIR'
       symlink = File.join('.symlinks', 'flutter')
       File.symlink(File.dirname(p[:path]), symlink)
@@ -56,14 +53,13 @@ target 'Runner' do
     end
   }
 
-  # Plugin Pods
+  # Plugin Pods setup
   plugin_pods = parse_KV_file('../.flutter-plugins')
-  plugin_pods.map { |p|
+  plugin_pods.each { |p|
     symlink = File.join('.symlinks', 'plugins', p[:name])
     File.symlink(p[:path], symlink)
     pod p[:name], :path => File.join(symlink, 'ios')
   }
-flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 end
 
 # Prevent Cocoapods from embedding a second Flutter framework and causing an error with the new Xcode build system.
