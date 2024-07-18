@@ -29,9 +29,7 @@ jobs:
           echo "target 'Runner' do" >> ios/Podfile
           echo "  use_frameworks!" >> ios/Podfile
           echo "  pod 'Firebase/Core'" >> ios/Podfile
-          echo "  pod 'file_picker', :path => '../'" >> ios/Podfile
           echo "end" >> ios/Podfile
-
       - run: pod repo update
         working-directory: ios
 
@@ -45,7 +43,6 @@ jobs:
         run: |
           mkdir -p Payload
           mv build/ios/iphoneos/Runner.app Payload/
-
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v2
         with:
