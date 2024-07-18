@@ -1,4 +1,4 @@
-name: "iOS-ipa-build"
+name: iOS-ipa-build
 
 on:
   workflow_dispatch:
@@ -43,6 +43,7 @@ jobs:
         run: |
           mkdir -p Payload
           mv build/ios/iphoneos/Runner.app Payload/
+
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v2
         with:
