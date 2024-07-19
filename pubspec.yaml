@@ -45,7 +45,7 @@ dependencies:
   flutter_html: ^3.0.0-alpha.9
   permission_handler: ^11.3.0
   image_picker: ^1.0.7
-  file_picker: ^6.1.1
+  file_picker: ^6.2.1
   flutter_svg: ^0.23.0+1
   gradient_like_css: ^1.0.1
   carousel_slider: ^4.2.1
