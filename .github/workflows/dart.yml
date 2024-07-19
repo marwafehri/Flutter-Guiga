@@ -16,7 +16,10 @@ jobs:
         with:
           channel: "stable"
           architecture: x64
-
+          
+      - name: Run Flutter Doctor
+        run: flutter doctor -v
+        
       - name: Clean Flutter project
         run: flutter clean
 
