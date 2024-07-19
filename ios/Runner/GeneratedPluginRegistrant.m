@@ -6,9 +6,6 @@
 
 #import "GeneratedPluginRegistrant.h"
 
-echo "error: Flutter launched from Runner.xcodeproj. Use Runner.xcworkspace instead" 1>&2
-exit 1
-
 #if __has_include(<file_picker/FilePickerPlugin.h>)
 #import <file_picker/FilePickerPlugin.h>
 #else
