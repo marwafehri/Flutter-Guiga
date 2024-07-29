@@ -25,9 +25,9 @@ jobs:
 
       - name: Remove iOS build directory
         run: |
+          rm ios/Podfile
+          rm ios/Podfile.lock
           rm -rf ios/Pods
-          rm -rf ios/Podfile.lock
-          rm -rf ios/Flutter/Flutter.framework
 
       - name: Upgrade Flutter dependencies
         run: flutter pub get
