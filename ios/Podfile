@@ -31,8 +31,19 @@ target 'Runner' do
   use_frameworks!
   use_modular_headers!
 
-  pod 'file_picker', :path => '../.flutter-plugins'
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
+end
+
+# Include the Flutter build system
+def flutter_install_all_ios_pods(flutter_application_path)
+  # Find the Flutter dependency directory
+  flutter_root = File.join(flutter_application_path, '.flutter-plugins')
+  # Add the Flutter pods
+  if File.exist?(flutter_root)
+    Dir.glob(File.join(flutter_root, '*.podspec')).each do |podspec|
+      pod File.basename(podspec, '.podspec').gsub(/^[\.\-\/]+/, ''), :path => File.join(flutter_root, File.basename(podspec))
+    end
+  end
 end
 
 post_install do |installer|
