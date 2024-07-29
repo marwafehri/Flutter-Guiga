@@ -5,7 +5,12 @@
 // clang-format off
 
 #import "GeneratedPluginRegistrant.h"
+
+#if __has_include(<file_picker/FilePickerPlugin.h>)
 #import <file_picker/FilePickerPlugin.h>
+#else
+@import file_picker;
+#endif
 
 #if __has_include(<firebase_core/FLTFirebaseCorePlugin.h>)
 #import <firebase_core/FLTFirebaseCorePlugin.h>
