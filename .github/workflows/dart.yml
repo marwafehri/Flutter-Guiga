@@ -43,14 +43,17 @@ jobs:
       - run: pod repo update
         working-directory: ios
 
-      - run: cd ios
-        working-directory: ios
-        
-      - run: pod install
-        working-directory: ios
+      - name: Check if ios directory exists
+        run: |
+          if [ ! -d "ios" ]; then
+            flutter create .
+          fi
 
-      - run: cd ..
-        working-directory: ios
+      - name: Run pod install
+        run: |
+          cd ios
+          pod install
+          cd ..
 
       - name: Build iOS IPA
         run: flutter build ios --release --no-codesign
