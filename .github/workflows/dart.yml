@@ -5,7 +5,7 @@ on:
 
 jobs:
   build-ios-and-android:
-    name: iOS and Android Build
+    name: iOS Build
     runs-on: macos-latest
 
     steps:
@@ -32,44 +32,21 @@ jobs:
       - name: Upgrade Flutter dependencies
         run: flutter pub get
 
-      - name: Install CocoaPods dependencies
+      - name: Update Pod Repo
         run: |
           cd ios
-          pod install
-
-      - name: Remove existing build directories
-        run: |
-          rm -rf ios/Pods
-          rm -rf ios/Podfile.lock
-          rm -rf ios/Flutter/Flutter.framework
-          rm ios/Flutter/Flutter.framework
-          rm ios/Pods
-          rm ios/Podfile.lock
-
-      - name: Reinstall CocoaPods dependencies
-        run: |
-          cd ios
-          pod install
-
+          pod repo update
+          cd ..
 
       - name: Ensure iOS platform in Podfile
         run: |
           echo "platform :ios, '12.0'" > ios/Podfile
           echo "target 'Runner' do" >> ios/Podfile
           echo "  use_frameworks!" >> ios/Podfile
-          echo "  pod 'Firebase/Core'" >> ios/Podfile
+          echo "  flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))" >> ios/Podfile
           echo "end" >> ios/Podfile
 
-      - run: pod repo update
-        working-directory: ios
-
-      - name: Check if ios directory exists
-        run: |
-          if [ ! -d "ios" ]; then
-            flutter create .
-          fi
-
-      - name: Run pod install
+      - name: Install CocoaPods dependencies
         run: |
           cd ios
           pod install
