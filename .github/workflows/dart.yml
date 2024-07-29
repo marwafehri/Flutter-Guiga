@@ -32,12 +32,26 @@ jobs:
       - name: Upgrade Flutter dependencies
         run: flutter pub get
 
-      - name: add package file_picker
-        run: flutter packages pub run build_runner build
+      - name: Install CocoaPods dependencies
+        run: |
+          cd ios
+          pod install
+
+      - name: Remove existing build directories
+        run: |
+          rm -rf ios/Pods
+          rm -rf ios/Podfile.lock
+          rm -rf ios/Flutter/Flutter.framework
+
+      - name: Reinstall CocoaPods dependencies
+        run: |
+          cd ios
+          pod install
+
 
       - name: Ensure iOS platform in Podfile
         run: |
-          echo "platform :ios, '9.0'" > ios/Podfile
+          echo "platform :ios, '12.0'" > ios/Podfile
           echo "target 'Runner' do" >> ios/Podfile
           echo "  use_frameworks!" >> ios/Podfile
           echo "  pod 'Firebase/Core'" >> ios/Podfile
