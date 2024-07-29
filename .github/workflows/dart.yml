@@ -43,7 +43,13 @@ jobs:
       - run: pod repo update
         working-directory: ios
 
+      - run: cd ios
+        working-directory: ios
+        
       - run: pod install
+        working-directory: ios
+
+      - run: cd ..
         working-directory: ios
 
       - name: Build iOS IPA
