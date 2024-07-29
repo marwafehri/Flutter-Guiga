@@ -29,7 +29,7 @@ jobs:
           rm -f ios/Podfile.lock
           rm -rf ios/Pods
 
-      - name: Upgrade Flutter dependencies
+      - name: Upgrade Flutter dependencies android
         run: flutter pub get
 
       - name: Ensure iOS platform in Podfile
@@ -44,6 +44,7 @@ jobs:
         run: |
           cd ios
           pod install
+          pod update
           cd ..
 
       - name: Build iOS IPA
