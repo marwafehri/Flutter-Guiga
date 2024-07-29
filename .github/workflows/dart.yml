@@ -17,9 +17,6 @@ jobs:
           channel: "stable"
           architecture: x64
 
-      - name: Run Flutter Doctor
-        run: flutter doctor -v
-
       - name: Clean Flutter project
         run: flutter clean
 
@@ -29,8 +26,8 @@ jobs:
           rm -f ios/Podfile.lock
           rm -rf ios/Pods
 
-      - name: Upgrade Flutter dependencies android
-        run: flutter pub get
+      - name: Upgrade Flutter dependencies ios
+        run: cd ios
 
       - name: Ensure iOS platform in Podfile
         run: |
@@ -42,7 +39,6 @@ jobs:
 
       - name: Install CocoaPods dependencies
         run: |
-          cd ios
           pod install --repo-update
           cd ..
 
