@@ -5,7 +5,7 @@ on:
 
 jobs:
   build-ios-and-android:
-    name: iOS last Build
+    name: iOS Last1 Build
     runs-on: macos-latest
 
     steps:
@@ -25,8 +25,8 @@ jobs:
 
       - name: Remove iOS build directory
         run: |
-          rm ios/Podfile
-          rm ios/Podfile.lock
+          rm -f ios/Podfile
+          rm -f ios/Podfile.lock
           rm -rf ios/Pods
 
       - name: Upgrade Flutter dependencies
