@@ -39,7 +39,7 @@ jobs:
 
       - name: Install CocoaPods dependencies
         run: |
-          pod install --repo-update
+          pod install
           cd ..
 
       - name: Build iOS IPA
