@@ -5,7 +5,7 @@ on:
 
 jobs:
   build-ios-and-android:
-    name: iOS Build
+    name: iOS last Build
     runs-on: macos-latest
 
     steps:
@@ -32,17 +32,12 @@ jobs:
       - name: Upgrade Flutter dependencies
         run: flutter pub get
 
-      - name: Update Pod Repo
-        run: |
-          cd ios
-          pod repo update
-          cd ..
-
       - name: Ensure iOS platform in Podfile
         run: |
           echo "platform :ios, '12.0'" > ios/Podfile
           echo "target 'Runner' do" >> ios/Podfile
           echo "  use_frameworks!" >> ios/Podfile
+          echo "  use_modular_headers!" >> ios/Podfile
           echo "  flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))" >> ios/Podfile
           echo "end" >> ios/Podfile
 
