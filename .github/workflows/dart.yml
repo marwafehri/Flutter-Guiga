@@ -32,6 +32,9 @@ jobs:
       - name: Upgrade Flutter dependencies
         run: flutter pub get
 
+      - name: add package file_picker
+        run: flutter packages pub run build_runner build
+
       - name: Ensure iOS platform in Podfile
         run: |
           echo "platform :ios, '9.0'" > ios/Podfile
