@@ -40,8 +40,11 @@ jobs:
           pod install
           cd ..
 
-      - name: Install Fastlane
-        run: gem install fastlane -NV
+      - name: Install Homebrew
+        run: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+      - name: Install Fastlane with Homebrew
+        run: brew install fastlane
 
       - name: Setup Fastlane
         env:
