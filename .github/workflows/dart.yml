@@ -38,7 +38,6 @@ jobs:
           echo "target 'Runner' do" >> ios/Podfile
           echo "  use_frameworks!" >> ios/Podfile
           echo "  use_modular_headers!" >> ios/Podfile
-          echo "  flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))" >> ios/Podfile
           echo "end" >> ios/Podfile
 
       - name: Install CocoaPods dependencies
