@@ -40,6 +40,16 @@ jobs:
           pod install
           cd ..
 
+      - name: Install Fastlane
+        run: gem install fastlane -NV
+
+      - name: Setup Fastlane
+        run: |
+          cd ios
+          fastlane match development
+          fastlane match appstore
+          cd ..
+
       - name: Build iOS IPA
         run: flutter build ios --release
         
