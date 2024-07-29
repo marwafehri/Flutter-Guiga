@@ -46,17 +46,6 @@ jobs:
       - name: Install Fastlane with Homebrew
         run: brew install fastlane
 
-      - name: Setup Fastlane
-        env:
-          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-          GIT_URL: ${{ secrets.GIT_URL }}
-          MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
-        run: |
-          cd ios
-          fastlane match development --readonly --git_url https://github.com/marwafehri/Flutter-Guiga/
-          fastlane match appstore --readonly --git_url https://github.com/marwafehri/Flutter-Guiga/
-          cd ..
-
       - name: Build iOS IPA
         run: flutter build ios --release
         
