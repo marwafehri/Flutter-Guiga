@@ -5,7 +5,7 @@ on:
 
 jobs:
   build-ios-and-android:
-    name: iOS Last1 Build
+    name: iOS Last2 Build
     runs-on: macos-latest
 
     steps:
