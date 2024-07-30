@@ -45,9 +45,15 @@ jobs:
 
       - name: Install Fastlane with Homebrew
         run: brew install fastlane
+        
+      - name: pub get
+        run: flutter pub get
 
+      - name: clean
+        run: flutter clean
+        
       - name: Build iOS IPA
-        run: flutter build ios --release
+        run: flutter build ios 
         
       - name: Prepare iOS Payload
         run: |
