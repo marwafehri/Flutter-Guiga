@@ -16,7 +16,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'firebase_options.dart'; */
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await FirebaseApi().initNotification();
   runApp(new MyApp());

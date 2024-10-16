@@ -49,8 +49,11 @@ class HomePagePageState extends State<HomePage> {
   final FooterBloc _footerBloc = FooterBloc();
 
   int _currentIndex = 0;
-  final CarouselController _controllersliderreview = CarouselController();
-  final CarouselController _controllersliderblog = CarouselController();
+  //final CarouselController _controllersliderreview = CarouselController();
+  // final CarouselController _controllersliderblog = CarouselController();
+  final CarouselSliderController _controllersliderreview = CarouselSliderController();
+
+  final CarouselSliderController _controllersliderblog = CarouselSliderController();
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
