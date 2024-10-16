@@ -1,11 +1,11 @@
-name: iOS-ipa-build-release
+name: iOS-ipa-build
 
 on:
   workflow_dispatch:
 
 jobs:
   build-ios-and-android:
-    name: iOS Last1 Build
+    name: iOS Last2 Build
     runs-on: macos-latest
 
     steps:
@@ -25,7 +25,6 @@ jobs:
           rm -f ios/Podfile
           rm -f ios/Podfile.lock
           rm -rf ios/Pods
-
       - name: Ensure iOS platform in Podfile
         run: |
           echo "platform :ios, '12.0'" > ios/Podfile
@@ -33,27 +32,35 @@ jobs:
           echo "  use_frameworks!" >> ios/Podfile
           echo "  use_modular_headers!" >> ios/Podfile
           echo "end" >> ios/Podfile
-
       - name: Install CocoaPods dependencies
         run: |
           cd ios
           pod install
           cd ..
-
       - name: Install Homebrew
         run: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
       - name: Install Fastlane with Homebrew
         run: brew install fastlane
 
+      - name: Setup Fastlane
+        env:
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          GIT_URL: ${{ secrets.GIT_URL }}
+          MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
+        run: |
+          cd ios
+          fastlane match development --readonly --git_url $GIT_URL
+          fastlane match appstore --readonly --git_url $GIT_URL
+          cd ..
+          
       - name: Build iOS IPA
         run: flutter build ios --release
-
+        
       - name: Prepare iOS Payload
         run: |
           mkdir -p Payload
           mv build/ios/iphoneos/Runner.app Payload/
-
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v2
         with:
