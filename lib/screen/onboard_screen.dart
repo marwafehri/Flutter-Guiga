@@ -59,7 +59,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         backgroundColor: Color(0xFFD3546E),
       ),
       skipTextButton: Text(
-        'Skip',
+        'Passer',
         style: TextStyle(
           fontSize: 16,
           color: Color(0xFFD3546E),

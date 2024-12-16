@@ -147,6 +147,10 @@ class _SejourPageState extends State<SejourPage> {
       img.attributes['style'] = currentStyle;
     });
 
+    document.querySelectorAll('a').forEach((dom.Element link) {
+      link.remove(); // Completely removes the <a> element along with its content
+    });
+
     return document.outerHtml;
   }
 }

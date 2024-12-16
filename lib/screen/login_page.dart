@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:woocommerce_app/screen/forget-login_page.dart';
 import 'package:woocommerce_app/screen/customer_add.dart';
 import 'package:woocommerce_app/screen/home_page.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 /*
 class WordPressAuthService {
   final Dio _dio = Dio();
@@ -75,14 +76,13 @@ class LoginPage extends StatefulWidget {
     await storage.delete(key: 'billing_sexe');
     await storage.delete(key: 'role');
 
-    // Add more keys if needed
-
-    // Navigate to the login page
+    // Navigate to the home page
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => LoginPage()),
+      MaterialPageRoute(builder: (context) => HomePage()),
     );
   }
+
 }
 
 class _LoginPageState extends State<LoginPage> {
@@ -93,6 +93,9 @@ class _LoginPageState extends State<LoginPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>(); // Define _scaffoldKey
   bool isPasswordVisible = false;
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  late String userId = '';
+  late String username= '';
 
   Future<void> loginUser() async {
     final String email = emailController.text;
@@ -182,11 +185,18 @@ class _LoginPageState extends State<LoginPage> {
       }
     }
   }
-
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      /*appBar: AppBar(
+  void initState() {
+    super.initState();
+    // Load user ID when the widget is initialized
+    loadUserId().then((value) {
+      setState(() {
+        userId = value['userId'] ?? 'Unknown';
+        username = value['username'] ?? 'Unknown';
+      });
+    });
+  }
+  /*appBar: AppBar(
           iconTheme: IconThemeData(
             color: Colors.black, //change your color here
           ),
@@ -207,180 +217,225 @@ class _LoginPageState extends State<LoginPage> {
           },
         ),
       ),*/
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey, // Assign the GlobalKey<FormState> to the form's key
-          child: Container(
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        children: [
+
+          Padding(
+            padding: const EdgeInsets.all(16.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Expanded( // Utiliser Expanded ici
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        'images/logo.png',
-                        fit: BoxFit.contain,
-                      ),
-                      SizedBox(height: 60),
-                      TextFormField(
-                        decoration: const InputDecoration(labelText: 'Email'),
-                        controller: emailController,
-                        keyboardType: TextInputType.emailAddress,
-                        validator: (String? val) {
-                          if (val != null) {
-                            return validateEmail(val);
-                          }
-                          return null;
-                        },
-                      ),
-                      /*TextField(
-                  controller: emailController,
-                  decoration: InputDecoration(
-                    hintText: 'Email',
-                  ),
-                ),*/
-                      TextField(
-                        controller: passwordController,
-                        obscureText: !isPasswordVisible,
-                        decoration: InputDecoration(
-                          labelText: 'Mot de passe',
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                isPasswordVisible = !isPasswordVisible;
-                              });
-                            },
-                          ),
+                Expanded(
+                  child: Form(
+                    key: _formKey, // Assign the GlobalKey<FormState> to the form's key
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          'images/logo.png',
+                          fit: BoxFit.contain,
                         ),
-                      ),
-                      SizedBox(height: 25),
-                       GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ForgetLoginPage(),
-                            ),
-                          );
-                        },
-                        child: Container(
-                          margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20).copyWith(bottom: 40),
-                          child: Center(
-                            child: Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Text(
-                                "Réinitialiser le mot de passe",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontStyle: FontStyle.normal,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 18,
-                                  color: Color(0xFFA28275),
-                                  decoration: TextDecoration.underline,
-                                ),
+                        const SizedBox(height: 60),
+                        TextFormField(
+                          decoration: const InputDecoration(labelText: 'Email'),
+                          controller: emailController,
+                          keyboardType: TextInputType.emailAddress,
+                          validator: (String? val) {
+                            if (val != null) {
+                              return validateEmail(val);
+                            }
+                            return null;
+                          },
+                        ),
+                        TextField(
+                          controller: passwordController,
+                          obscureText: !isPasswordVisible,
+                          decoration: InputDecoration(
+                            labelText: 'Mot de passe',
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                isPasswordVisible ? Icons.visibility : Icons.visibility_off,
                               ),
+                              onPressed: () {
+                                setState(() {
+                                  isPasswordVisible = !isPasswordVisible;
+                                });
+                              },
                             ),
                           ),
                         ),
-                      ),
-                      ElevatedButton(
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(Color(0xFFA28275)), // Background color
-                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(50), // Border radius
-                            ),
-                          ),
-                        ),
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            // Proceed with the login process if the form is valid
-                            loginUser();
-                          }
-                        },
-                        child: Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text(
-                            'Connectez-vous par e-mail',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontStyle: FontStyle.normal,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 22,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 25),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CustomerAddPage(),
-                            ),
-                          );
-                        },
-                        child: Center(
+                        const SizedBox(height: 25),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ForgetLoginPage(),
+                              ),
+                            );
+                          },
                           child: Container(
-                            margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20).copyWith(bottom: 40),
-                            child: Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: RichText(
-                                textAlign: TextAlign.center,
-                                text: TextSpan(
+                            margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20).copyWith(bottom: 40),
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: const Text(
+                                  "Réinitialiser le mot de passe",
+                                  textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontStyle: FontStyle.normal,
                                     fontWeight: FontWeight.w500,
-                                    fontSize: 22,
-                                    color: Colors.white,
+                                    fontSize: 18,
+                                    color: Color(0xFFA28275),
+                                    decoration: TextDecoration.underline,
                                   ),
-                                  children: [
-                                    TextSpan(
-                                      text: "Vous n'avez pas de compte? ",
-                                      style: TextStyle(
-                                        fontStyle: FontStyle.normal,
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 18,
-                                        color: Color(0xFF000000),
-                                        decoration: TextDecoration.underline,
-                                      ),
-                                    ),
-                                    TextSpan(
-                                      text: "S'inscrire",
-                                      style: TextStyle(
-                                        fontStyle: FontStyle.normal,
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 18,
-                                        color: Color(0xFFA28275),
-                                        decoration: TextDecoration.underline,
-                                      ),
-                                    ),
-                                  ],
                                 ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFA28275), // Background color
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(50), // Border radius
+                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 14.0),
+                          ),
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              // Proceed with the login process if the form is valid
+                              loginUser();
+                            }
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 25.0),
+                            child: Text(
+                              'Connectez-vous par e-mail',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontStyle: FontStyle.normal,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 22,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 25),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CustomerAddPage(),
+                              ),
+                            );
+                          },
+                          child: Center(
+                            child: Container(
+                              margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 0).copyWith(bottom: 0),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: RichText(
+                                  textAlign: TextAlign.center,
+                                  text: const TextSpan(
+                                    style: TextStyle(
+                                      fontStyle: FontStyle.normal,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 22,
+                                      color: Colors.white,
+                                    ),
+                                    children: [
+                                      TextSpan(
+                                        text: "Vous n'avez pas de compte? ",
+                                        style: TextStyle(
+                                          fontStyle: FontStyle.normal,
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 18,
+                                          color: Color(0xFF000000),
+                                          decoration: TextDecoration.underline,
+                                        ),
+                                      ),
+                                      TextSpan(
+                                        text: "S'inscrire",
+                                        style: TextStyle(
+                                          fontStyle: FontStyle.normal,
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 18,
+                                          color: Color(0xFFA28275),
+                                          decoration: TextDecoration.underline,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
+                // "Ignorer cette étape" button outside of the form
 
               ],
             ),
           ),
-        ),
-      ),
+          /*Container(
+            margin: const EdgeInsets.only(bottom: 40.0), // Add margin bottom
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFA28275), // Background color
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50), // Border radius
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 25.0),
+              ),
+              onPressed: () async {
+                await widget.clearUserInformation(context);
+              },
+              child: const Padding(
+                padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
+                child: Text(
+                  'Ignorer cette étape',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontStyle: FontStyle.normal,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 22,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          */
 
+          Positioned(
+            top: 16,
+            right: 16,
+            child: IconButton(
+              icon: Icon(
+                Icons.close,
+                color: Colors.black,
+                size: 36,
+              ),
+              onPressed: () async {
+                await widget.clearUserInformation(context);
+              },
+            ),
+          ),
+
+        ],
+      ),
     );
   }
+
   void showDefaultSnackbar() {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -397,6 +452,14 @@ class _LoginPageState extends State<LoginPage> {
       return 'Enter Valid Email';
     else
       return null;
+  }
+  Future<Map<String, String?>> loadUserId() async {
+    final storage = FlutterSecureStorage();
+    //return await storage.readAll();
+    return {
+      'userId': await storage.read(key: 'userId'),
+      'username': await storage.read(key: 'username'),
+    };
   }
 
 }

@@ -59,6 +59,8 @@ class MonComptePageState extends State<MonComptePage> {
       setState(() {
         userId = value['userId'] ?? 'Unknown';
         username = value['username'] ?? 'Unknown';
+        print("userId login page $userId");
+
       });
     });
   }
@@ -394,7 +396,7 @@ class MonComptePageState extends State<MonComptePage> {
                                 SizedBox(height: 10,),
                                 Text(
                                   // 'Se déconnecter',
-                                  'Deconnecter',
+                                  'Déconnecter',
                                   style: TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.w400,

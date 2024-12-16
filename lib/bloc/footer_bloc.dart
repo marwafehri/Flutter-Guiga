@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:woocommerce_app/helper/const.dart';
@@ -6,8 +8,67 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:woocommerce_app/screen/blog_page.dart';
 import 'package:woocommerce_app/screen/home_page.dart';
+import 'package:woocommerce_app/screen/place_devis_page.dart';
+import 'package:woocommerce_app/screen/sejour_page.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+/* whatsapp */
+final String message = 'Bonjour';
+final Uri _url = Uri.parse('https://wa.me/+21696238882?message=$message');
 
+Future<void> _launchUrl() async {
+  if (!await launchUrl(_url)) {
+    throw Exception('Could not launch $_url?message=$message');
+  }
+}
+/* telephone */
+final Uri _urltel = Uri.parse('tel:+21696238882');
+Future<void> _launchUrltel() async {
+  if (!await launchUrl(_urltel)) {
+    throw Exception('Could not launch $_urltel');
+  }
+}
+/* email */
+String? encodeQueryParameters(Map<String, String> params) {
+return params.entries
+    .map((MapEntry<String, String> e) =>
+'${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+    .join('&');
+}
+
+Future<void> _launchEmail() async {
+  final Uri emailLaunchUri = Uri(
+    scheme: 'mailto',
+    path: 'marwafehristic@gmail.com',
+    query: encodeQueryParameters(<String, String>{
+    'subject': 'Example Subject & Symbols are allowed!',
+    }),
+  );
+  if (await launchUrl(emailLaunchUri)) {
+    throw Exception('Could not launch $emailLaunchUri');
+  }
+}
+/*
+void _launchWhatsApp() async {
+  String contact = "+21696238882";
+  String message = 'Bonjour';
+
+  // WhatsApp URL for Android and iOS
+  String whatsappUrl = Platform.isIOS
+      ? "https://wa.me/$contact?text=${Uri.encodeComponent(message)}"
+      : "whatsapp://send?phone=$contact&text=${Uri.encodeComponent(message)}";
+
+  try {
+    if (await canLaunchUrl(Uri.parse(whatsappUrl))) {
+      await launchUrl(Uri.parse(whatsappUrl), mode: LaunchMode.externalApplication);
+    } else {
+      throw 'Could not launch WhatsApp';
+    }
+  } catch (e) {
+    print('Error launching WhatsApp: $e');
+  }
+}
+*/
 class FooterBloc {
 
   Widget blocFooter(BuildContext context) {
@@ -95,15 +156,21 @@ class FooterBloc {
                                 color: Colors.white,
                               ),
                               SizedBox(width: 10),
-                              Expanded( // Wrap the Text widget in an Expanded widget
-                                child: Text(
-                                  'bilelguiga@gmail.com',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.white,
+                              Expanded(
+                                child: InkWell( // Use InkWell for better feedback on tap
+                                  onTap: () async {
+                                    _launchEmail();
+                                  },
+
+                                  child: Text(
+                                    'bilelguiga@gmail.com',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.white,
+                                    ),
+                                    maxLines: 7,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                  maxLines: 7,
-                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
                             ],
@@ -117,27 +184,39 @@ class FooterBloc {
                                 color: Colors.white,
                               ),
                               SizedBox(width: 10),
-                              Expanded( // Wrap the Text widget in an Expanded widget
-                                child: Text(
-                                  '(+216) 71 749 494',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.white,
+                              Expanded(
+                                child: InkWell( // Use InkWell for better feedback on tap
+                                  onTap: () async {
+                                    _launchUrltel();
+                                  },
+
+                                  child: Text(
+                                    '(+216) 71 749 494',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.white,
+                                    ),
+                                    maxLines: 7,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                  maxLines: 7,
-                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
                               SizedBox(width: 15),
-                              Expanded( // Wrap the Text widget in an Expanded widget
-                                child: Text(
-                                  '(+216) 54 583 255',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.white,
+                              Expanded(
+                                child: InkWell( // Use InkWell for better feedback on tap
+                                  onTap: () async {
+                                    _launchUrl();
+                                  },
+
+                                  child: Text(
+                                    '(+216) 54 583 255',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.white,
+                                    ),
+                                    maxLines: 7,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                  maxLines: 7,
-                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
                             ],
@@ -145,7 +224,7 @@ class FooterBloc {
                         ],
                       ),
                     ),
-                    Container(
+                   /* Container(
                       padding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -224,7 +303,7 @@ class FooterBloc {
                           ),
                         ],
                       ),
-                    ),
+                    ),*/
                     Container(
                       padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
                       child: Column(
@@ -238,7 +317,7 @@ class FooterBloc {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => HomePage(),
+                                        builder: (context) => PlaceDevisPage(),
                                       ),
                                     );
                                   },
@@ -272,7 +351,7 @@ class FooterBloc {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => HomePage(),
+                                        builder: (context) => SejourPage(),
                                       ),
                                     );
                                   },

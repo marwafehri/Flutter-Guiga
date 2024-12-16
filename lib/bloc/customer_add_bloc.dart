@@ -13,12 +13,13 @@ class CustomerAddBloc {
     try {
       var response = await Const.wc_api.postAsync("customers", {
         "email": customerBasicInfo['email'],
+        "password": customerBasicInfo['password'],
         "first_name": customerBasicInfo['firstName'],
         "username": customerBasicInfo['userName'],
         "billing": customerAddressInfo,
         "shipping": customerAddressInfo
       });
-
+      print("CustomerAddBloc");
       print(response);
       Navigator.of(context).pop(); // Close progress dialog
 

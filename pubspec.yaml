@@ -102,6 +102,39 @@ flutter:
     - images/logo-slider1.png
     - images/suivi.png
     - images/temoigne.png
+    - images/abdominoplastie.png
+    - images/BBL.png
+    - images/Lipofilling-des-fesses.png
+    - images/Lipofilling-des-fesses.png
+    - images/Liposuccion.png
+    - images/Mesotherapie.png
+    - images/PRP.png
+    - images/reconstruction-seins.png
+    - images/mamelon-ombilique.png
+    - images/lifting-des-seins-avec-ou-sans-protheses.png
+    - images/reduction-mammaire.png
+    - images/augmentation-par-prothese.png
+    - images/Blepharoplastie.png
+    - images/body-lift.png
+    - images/Chirurgie-de-la-calvitie.png
+    - images/Chirurgie_maxillaires.png
+    - images/mentoplasty.png
+    - images/Les_fentes_labio-palatines.png
+    - images/Lifting-bras.png
+    - images/Lifting_cuisses.png
+    - images/Lifting_dos.png
+    - images/Lifting-fesses.png
+    - images/lifting-visage.png
+    - images/Lipofilling-visage.png
+    - images/Nymphoplastie.png
+    - images/otoplasty.png
+    - images/Penoplastie.png
+    - images/Protheses-fessiers.png
+    - images/Reconstruction-de-lhymen.png
+    - images/Rhinoplastie.png
+    - images/Vaginoplastie.png
+    - images/reduction-mammaire.png
+    - images/interventions.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

@@ -21,6 +21,7 @@ import 'package:woocommerce_app/screen/blog_page.dart';
 import 'package:woocommerce_app/bloc/footer_bloc.dart';
 import 'package:woocommerce_app/screen/single_blog_page.dart';
 import 'package:woocommerce_app/screen/single_intervention_page.dart';
+import 'package:woocommerce_app/screen/single_category_page.dart';
 import 'package:woocommerce_app/screen/sejour_page.dart';
 import 'package:woocommerce_app/bloc/menu_bar.dart';
 import 'package:woocommerce_app/bloc/bottom_app_bar.dart';
@@ -42,6 +43,12 @@ class HomePagePageState extends State<HomePage> {
 
   InterventionsBloc _interventionsBloc = InterventionsBloc();
   List<Map<String, dynamic>>? _interventionsList;
+
+  List<Map<String, dynamic>>? _categoryList;
+  List<Map<String, dynamic>>?  _categoryinterventionList;
+
+  List<Map<String, dynamic>> interventionsCategory = [];
+  bool isLoading = true;
 
   BlogBloc _blogBloc = BlogBloc();
   List<Map<String, dynamic>>? _blogList;
@@ -70,23 +77,34 @@ class HomePagePageState extends State<HomePage> {
     print('Icon $index tapped');
   }
 
-  @override
 
+  @override
   void initState() {
     super.initState();
-   // _initializeAnimations();
+
+     /* final fetchedInterventions = await InterventionsBloc.fetchCategoriesAndInterventions();
+      print("fetchedInterventions");
+      print(fetchedInterventions);*/
+
+    // _initializeAnimations();
 
     bloc = HomePageBloc();
 
     // Function call for sales status report
     //bloc.fetchSalesReports();
+
     _fetchInterventions();
+    _fetchCategory();
+    //_fetchCategoriesAndInterventions();
+    _fetchInterventionsByCategoryy();
+
 
     loadUserId().then((value) {
       setState(() {
         userId = value['userId'] ?? 'Unknown';
         username = value['username'] ?? 'Unknown';
-        print("userId");
+        print("userId home page");
+
         print(userId);
 
       });
@@ -121,7 +139,7 @@ class HomePagePageState extends State<HomePage> {
 
       allInterventions.addAll(interventions as Iterable<Map<String, dynamic>>);
 
-      print("All interventions home page: $allInterventions");
+     // print("All interventions home page: $allInterventions");
 
       setState(() {
         _interventionsList = allInterventions;
@@ -132,6 +150,91 @@ class HomePagePageState extends State<HomePage> {
       // Handle the error
     }
   }
+  Future<void> _fetchCategory() async {
+    List<Map<String, dynamic>> allCategory = [];
+
+    try {
+      // Fetch all interventions from the bloc
+      List<Map<String, dynamic>>? interventions = await _interventionsBloc.fetchCategory();
+
+      allCategory.addAll(interventions as Iterable<Map<String, dynamic>>);
+
+     // print("All Category home page1: $allCategory");
+
+      setState(() {
+        _categoryList = allCategory;
+      });
+    } catch (error) {
+      print('Error fetching interventions: $error');
+      // Handle the error
+    }
+  }
+  Future<void> _fetchInterventionsByCategoryy() async {
+    List<Map<String, dynamic>> allCategoryinterventions = [];
+
+    try {
+      // Fetch all interventions from the bloc
+      List<Map<String, dynamic>>? interventions = await _interventionsBloc.fetchCategoriesWithInterventions();
+
+      allCategoryinterventions.addAll(interventions as Iterable<Map<String, dynamic>>);
+
+      print("All _fetchInterventionsByCategoryy home page2: $allCategoryinterventions");
+
+      setState(() {
+        _categoryinterventionList = allCategoryinterventions;
+      });
+    } catch (error) {
+      print('Error fetching interventions: $error');
+      // Handle the error
+    }
+  }
+ /* void fetchAndDisplayCategories() async {
+    try {
+      print("Fetching categories...");
+      InterventionsBloc bloc = InterventionsBloc();
+      List<Map<String, dynamic>>? categories = await bloc.fetchCategory();
+
+      if (categories != null && categories.isNotEmpty) {
+        print("Fetched categories: $categories");
+
+        // Update the state to display categories in the UI
+        setState(() {
+          _categoryinterventionList = categories;
+        });
+      } else {
+        print("No categories found.");
+        setState(() {
+          _categoryinterventionList = [];
+        });
+      }
+    } catch (error) {
+      print("Error fetching categories: $error");
+      setState(() {
+        _categoryinterventionList = [];
+      });
+    }
+  }*/
+ /* Future<void> _fetchCategoriesAndInterventions() async {
+    List<Map<String, dynamic>> allCategory = [];
+    print("interventionscategory");
+    try {
+      // Fetch all interventions from the bloc
+      List<Map<String, dynamic>>? interventionscategory = (await _interventionsBloc.fetchCategoriesAndInterventions()) as List<Map<String, dynamic>>?;
+
+      print(interventionscategory);
+      allCategory.addAll(interventionscategory as Iterable<Map<String, dynamic>>);
+
+      print("All _fetchCategoriesAndInterventions home page: $allCategory");
+
+      setState(() {
+        _categoryinterventionList = allCategory;
+        _fetchBlog();
+      });
+    } catch (error) {
+      print('Error fetching interventions: $error');
+      // Handle the error
+    }
+  }*/
   Future<void> _fetchBlog() async {
     List<Map<String, dynamic>> allBlogs = [];
 
@@ -176,7 +279,24 @@ class HomePagePageState extends State<HomePage> {
           ),
           backgroundColor: Colors.white,
           actions: [
-            if (userId != 'Unknown')
+            IconButton(
+              icon: Icon(
+                userId != 'Unknown' ? Icons.account_circle_outlined : Icons.wifi,
+                size: 30,
+                color: Color(0xFF000000),
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                    userId != 'Unknown' ? MonComptePage(null) : LoginPage(),
+                  ),
+                );
+              },
+            )
+
+            /* if (userId != 'Unknown')
               IconButton(
                 icon: Icon(
                   Icons.account_circle_outlined,
@@ -189,8 +309,8 @@ class HomePagePageState extends State<HomePage> {
                     MaterialPageRoute(builder: (context) => MonComptePage(null)),
                   );
                 },
-              ),
-            if (userId == 'Unknown')
+              )*/
+           /* if (userId == 'Unknown')
               IconButton(
                 icon: Icon(
                   Icons.wifi,
@@ -219,7 +339,7 @@ class HomePagePageState extends State<HomePage> {
                     ),
                   ).then((_) => LoginPage().clearUserInformation(context));
                 },
-              )
+              )*/
           ],
         ),
 
@@ -340,7 +460,7 @@ class HomePagePageState extends State<HomePage> {
                 else
                   ListTile(
                     leading: Icon(Icons.wifi),
-                    title: Text('Deconnecter'),
+                    title: Text('Déconnecter'),
                     onTap: () {
                       Navigator.pushReplacement(
                         context,
@@ -506,6 +626,7 @@ class HomePagePageState extends State<HomePage> {
                             ),
                             if (isExpandedmedec) ...[
                               _menuInterventionsMedecineList(),
+                             // _buildInterventionsCategoryList(),
                               /*ListTile(
                                 title: Text('Chirurgie mammaire'),
                                 onTap: () {
@@ -764,14 +885,14 @@ class HomePagePageState extends State<HomePage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 GestureDetector(
-                                  onTap: () {
+                                /*  onTap: () {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => MonComptePage(null),
                                       ),
                                     );
-                                  },
+                                  },*/
                                   child: Center(
                                     child: Padding(
                                       padding: EdgeInsets.only(left: 2.0),
@@ -881,14 +1002,14 @@ class HomePagePageState extends State<HomePage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 GestureDetector(
-                                  onTap: () {
+                                  /* onTap: () {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => MonComptePage(null),
                                       ),
                                     );
-                                  },
+                                  },*/
                                   child: Center(
                                     child: Padding(
                                       padding: EdgeInsets.only(left: 2.0),
@@ -1192,6 +1313,8 @@ class HomePagePageState extends State<HomePage> {
                         ),
                         SizedBox(height: 15),
                         _buildCarouselTemoignage(),
+
+                        _buildCategoryList(),
                       ],
                     ),
                   ),
@@ -2083,7 +2206,102 @@ class HomePagePageState extends State<HomePage> {
       MaterialPageRoute(builder: (context) => LoginPage()),
     );
   }
+ /* Widget _buildCategoryList() {
+    print("_categoryinterventionList");
+    print(_categoryinterventionList);
+    if (_categoryinterventionList == null) {
+      // Show a loading indicator while data is being fetched
+      return Center(child: CircularProgressIndicator());
+    } else if (_categoryinterventionList!.isEmpty) {
+      // Show a message if no categories or interventions are found
+      return Center(child: Text('No categories or interventions found.'));
+    } else {
+      // Group interventions by their types
+      Map<String, List<Map<String, dynamic>>> groupedInterventions = {};
+      _categoryinterventionList!.forEach((intervention) {
+        List<dynamic> interventionTypes = getInterventionType(intervention);
+        if (interventionTypes.contains(41)) {
+          List<int> otherTypes = interventionTypes.where((type) => type != 41).cast<int>().toList();
+          String key = otherTypes.join('-');
+          if (!groupedInterventions.containsKey(key)) {
+            groupedInterventions[key] = [];
+          }
+          groupedInterventions[key]!.add(intervention);
+        }
+      });
 
+      return ListView.separated(
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        itemCount: groupedInterventions.length,
+        separatorBuilder: (context, index) => Divider(), // Divider between groups
+        itemBuilder: (context, index) {
+          String key = groupedInterventions.keys.elementAt(index);
+          List<Map<String, dynamic>> interventions = groupedInterventions[key]!;
+
+          // Extract types from the key
+          List<int> types = key.split('-').map((type) => int.parse(type)).toList();
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Display the title and image for the first type
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    // Display the image based on the first type
+                    CircleAvatar(
+                      backgroundColor: Colors.white,
+                      radius: 40.0,
+                      child: getImageForInterventionType(types[0]),
+                    ),
+                    SizedBox(width: 20),
+                    // Display the title based on the first type
+                    Text(
+                      getTitleForInterventionType(types[0]),
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // List interventions for this type
+              Column(
+                children: interventions.map((intervention) {
+                  return ListTile(
+                    leading: Icon(
+                      Icons.arrow_forward_ios,
+                      size: 16,
+                      color: Color(0xFFA28275),
+                    ),
+                    title: Text(
+                      intervention['name'], // Assuming the field for intervention name
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    onTap: () {
+                      // Navigate to a detailed page
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SingleInterventionPage(intervention['id']), // Pass the intervention ID
+                        ),
+                      );
+                    },
+                  );
+                }).toList(),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }*/
   Widget _buildInterventionsEsthetiqueList() {
     if (_interventionsList == null) {
       // Show a loading indicator while fetching data
@@ -2105,6 +2323,7 @@ class HomePagePageState extends State<HomePage> {
           groupedInterventions[key]!.add(intervention);
         }
       });
+
 
       return ListView.separated(
         shrinkWrap: true,
@@ -2141,6 +2360,7 @@ class HomePagePageState extends State<HomePage> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+
                   ],
                 ),
               ),
@@ -2166,7 +2386,10 @@ class HomePagePageState extends State<HomePage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => SingleInterventionPage(intervention['id']),  // Make sure this constructor expects a postId
+                          builder: (context) => SingleInterventionPage(
+                              intervention['id'],
+                            intervention['title'],
+                          ),  // Make sure this constructor expects a postId
                         ),
                       );
                     },
@@ -2180,16 +2403,140 @@ class HomePagePageState extends State<HomePage> {
     }
   }
   Widget _menuInterventionsEsthetiqueList() {
-    if (_interventionsList == null) {
+    if (_categoryinterventionList == null) {
+      return Center(child: CircularProgressIndicator());
+    } else if (_categoryinterventionList!.isEmpty) {
+      return Center(child: Text('No interventions found.'));
+    } else {
+      // Filter the parent categories with the parent_category_id == 41
+      final parent41Categories = _categoryinterventionList!
+          .where((category) => category['parent_category_id'] == 41)
+          .toList();
+
+      // Map to group interventions by their child category id
+      Map<int, List<Map<String, dynamic>>> interventionsGroupedByChildCategory = {};
+
+      // Iterate through each parent category (intervention)
+      for (var parentCategory in parent41Categories) {
+        // Get the child categories for this parent
+        final List<dynamic>? childCategories = parentCategory['child_category'];
+
+        if (childCategories != null && childCategories.isNotEmpty) {
+          for (var childCategory in childCategories) {
+            // Check if the childCategory['id'] matches the id in the parentCategory's child_category list
+            if (childCategory['id'] == childCategory['id']) {
+              // Initialize the list for interventions if it does not exist
+              interventionsGroupedByChildCategory.putIfAbsent(
+                childCategory['id'],
+                    () => [],
+              );
+
+              // Add the intervention's title and ID to the grouped list
+              interventionsGroupedByChildCategory[childCategory['id']]!.add({
+                'title': parentCategory['title'],
+                'id': parentCategory['id'],
+              });
+            }
+          }
+        }
+      }
+
+      return ListView.builder(
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        itemCount: interventionsGroupedByChildCategory.keys.length,
+        itemBuilder: (context, index) {
+          // Get the child category ID
+          final childCategoryId = interventionsGroupedByChildCategory.keys.elementAt(index);
+          final interventions = interventionsGroupedByChildCategory[childCategoryId] ?? [];
+
+          // Find the corresponding child category details (name, etc.)
+          final childCategory = parent41Categories
+              .expand((category) => category['child_category'] ?? [])
+              .firstWhere((category) => category['id'] == childCategoryId, orElse: () => {});
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Display the child category name
+              if (childCategory.isNotEmpty)
+                ListTile(
+                  title: Text(
+                    (childCategory['name'] ?? 'Unknown Category').toUpperCase(),
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  onTap: () {
+                    // Handle tap on the intervention
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SingleCategoryPage(
+                          childCategory['id'],
+                          childCategory['name'],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              // Display the interventions related to this child category
+              if (interventions.isNotEmpty)
+                for (var intervention in interventions)
+                  ListTile(
+                    title: Text(
+                      intervention['title'] ?? 'Unknown Intervention',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    onTap: () {
+                      // Handle tap on the intervention
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SingleInterventionPage(
+                              intervention['id'],
+                            intervention['title'],
+                          ),
+                        ),
+                      );
+                    },
+                  )
+              else
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    'No interventions available for this category.',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
+
+
+
+
+/*
+    if (_categoryinterventionList == null) {
       // Show a loading indicator while fetching data
       return Center(child: CircularProgressIndicator());
-    } else if (_interventionsList!.isEmpty) {
+    } else if (_categoryinterventionList!.isEmpty) {
       // Show a message if the list is empty
       return Center(child: Text('No interventions found.'));
     } else {
       // Group interventions by their types
       Map<String, List<Map<String, dynamic>>> groupedInterventions = {};
-      _interventionsList!.forEach((intervention) {
+      _categoryinterventionList!.forEach((intervention) {
         List<dynamic> interventionTypes = getInterventionType(intervention);
         if (interventionTypes.contains(41)) {
           List<int> otherTypes = interventionTypes.where((type) => type != 41).cast<int>().toList();
@@ -2260,8 +2607,8 @@ class HomePagePageState extends State<HomePage> {
           );
         },
       );
-    }
-  }
+    }*/
+
   Widget _buildInterventionsMedecineList() {
     if (_interventionsList == null) {
       // Show a loading indicator while fetching data
@@ -2340,12 +2687,21 @@ class HomePagePageState extends State<HomePage> {
                       ),
                     ),
                     onTap: () {
-                      // Handle onTap event here
+                      // Navigate to SingleBlogPage passing the postId
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SingleInterventionPage(
+                              intervention['id'],
+                            intervention['title'],
+                          ),  // Make sure this constructor expects a postId
+                        ),
+                      );
                     },
                   );
                 }).toList(),
               ),
-              Padding(
+             /* Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Container(
                   decoration: BoxDecoration(
@@ -2366,7 +2722,7 @@ class HomePagePageState extends State<HomePage> {
                       SizedBox(width: 20),
                       // Render the appropriate title based on the first type
                       Text(
-                        "Les Lasers".toUpperCase(),
+                        "Les Lasers ".toUpperCase(),
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -2382,9 +2738,9 @@ class HomePagePageState extends State<HomePage> {
                     ],
                   ),
                 ),
-              ),
+              ),*/
 
-              Padding(
+             /* Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
                   children: [
@@ -2417,13 +2773,205 @@ class HomePagePageState extends State<HomePage> {
                     ),
                   ],
                 ),
-              ),
+              ),*/
             ],
           );
         },
       );
     }
   }
+
+  Widget _menuInterventionsMedecineList() {
+    if (_categoryinterventionList == null) {
+      return Center(child: CircularProgressIndicator());
+    } else if (_categoryinterventionList!.isEmpty) {
+      return Center(child: Text('No interventions found.'));
+    } else {
+      // Filter the parent categories with the parent_category_id == 14
+      final parent14Categories = _categoryinterventionList!
+          .where((category) => category['parent_category_id'] == 14)
+          .toList();
+
+      // Map to group interventions by their child category id
+      Map<int, List<Map<String, dynamic>>> interventionsGroupedByChildCategory = {};
+
+      // Iterate through each parent category (intervention)
+      for (var parentCategory in parent14Categories) {
+        // Get the child categories for this parent
+        final List<dynamic>? childCategories = parentCategory['child_category'];
+
+        if (childCategories != null && childCategories.isNotEmpty) {
+          for (var childCategory in childCategories) {
+            // Initialize the list for interventions if it does not exist
+            interventionsGroupedByChildCategory.putIfAbsent(
+              childCategory['id'],
+                  () => [],
+            );
+
+            // Add the intervention's title and ID to the grouped list
+            interventionsGroupedByChildCategory[childCategory['id']]!.add({
+              'title': parentCategory['title'],
+              'id': parentCategory['id'],
+            });
+          }
+        }
+      }
+
+      return ListView.builder(
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        itemCount: interventionsGroupedByChildCategory.keys.length,
+        itemBuilder: (context, index) {
+          // Get the child category ID
+          final childCategoryId = interventionsGroupedByChildCategory.keys.elementAt(index);
+          final interventions = interventionsGroupedByChildCategory[childCategoryId] ?? [];
+
+          // Find the corresponding child category details (name, etc.)
+          final childCategory = parent14Categories
+              .expand((category) => category['child_category'] ?? [])
+              .firstWhere((category) => category['id'] == childCategoryId, orElse: () => {});
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Display the child category name, even if there are no interventions
+              if (childCategory.isNotEmpty)
+                ListTile(
+                  title: Text(
+                    (childCategory['name'] ?? 'Unknown Category').toUpperCase(),
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  onTap: () {
+                    // Handle tap on the child category
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SingleCategoryPage(
+                          childCategory['id'],
+                          childCategory['name'],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              // Display the interventions related to this child category
+              if (interventions.isNotEmpty)
+                for (var intervention in interventions)
+                  ListTile(
+                    title: Text(
+                      intervention['title'] ?? 'Unknown Intervention',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    onTap: () {
+                      // Handle tap on the intervention
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SingleInterventionPage(
+                            intervention['id'],
+                            intervention['title'],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+              // If no interventions, show a message for this child category
+              if (interventions.isEmpty && childCategory.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    'No interventions available for this category.',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ),
+             /* Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: GestureDetector(
+                  onTap: () {
+                    // Handle tap on the child category
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SingleCategoryPage(
+                          childCategory[67], // Navigate to childCategory[68]
+                        ),
+                      ),
+                    );
+                  },
+                  child: Row(
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Les Lasers dermatologiques".toUpperCase(),
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: GestureDetector(
+                  onTap: () {
+                    // Handle tap on the child category
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SingleCategoryPage(
+                          childCategory[68], // Navigate to childCategory[68]
+                        ),
+                      ),
+                    );
+                  },
+                  child: Row(
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Traitement médical".toUpperCase(),
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            "de la silhouette".toUpperCase(),
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),*/
+            ],
+          );
+        },
+      );
+    }
+  }
+
+  /*
   Widget _menuInterventionsMedecineList() {
     if (_interventionsList == null) {
       // Show a loading indicator while fetching data
@@ -2488,8 +3036,15 @@ class HomePagePageState extends State<HomePage> {
                         fontWeight: FontWeight.w400,
                       ),
                     ),
+
                     onTap: () {
-                      // Handle onTap event here
+                      // Navigate to SingleBlogPage passing the postId
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SingleInterventionPage(intervention['id']),  // Make sure this constructor expects a postId
+                        ),
+                      );
                     },
                   );
                 }).toList(),
@@ -2501,7 +3056,7 @@ class HomePagePageState extends State<HomePage> {
                   child: Row(
                     children: [
                       Text(
-                        "Les Lasers".toUpperCase(),
+                        "Les Lasers ".toUpperCase(),
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -2544,6 +3099,105 @@ class HomePagePageState extends State<HomePage> {
                     ),
                   ],
                 ),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+*/
+   Widget _buildCategoryList() {
+    if (_categoryList == null) {
+      // Show a loading indicator while fetching data
+      return Center(child: CircularProgressIndicator());
+    } else if (_categoryList!.isEmpty) {
+      // Show a message if the list is empty
+      return Center(child: Text('No _categoryList found.'));
+    } else {
+      // Group interventions by their types
+      Map<String, List<Map<String, dynamic>>> groupedInterventions = {};
+      _categoryList!.forEach((intervention) {
+        List<dynamic> interventionTypes = getInterventionType(intervention);
+        if (interventionTypes.contains(41)) {
+          List<int> otherTypes = interventionTypes.where((type) => type != 41).cast<int>().toList();
+          String key = otherTypes.join('-');
+          if (!groupedInterventions.containsKey(key)) {
+            groupedInterventions[key] = [];
+          }
+          groupedInterventions[key]!.add(intervention);
+        }
+      });
+
+      return ListView.separated(
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        itemCount: groupedInterventions.length,
+        separatorBuilder: (context, index) => Divider(), // Add a divider between different intervention types
+        itemBuilder: (context, index) {
+          String key = groupedInterventions.keys.elementAt(index);
+          List<Map<String, dynamic>> interventions = groupedInterventions[key]!;
+
+          // Extract the types from the key
+          List<int> types = key.split('-').map((type) => int.parse(type)).toList();
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Display the large title and image based on the first type
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    // Render the appropriate image based on the first type
+                    CircleAvatar(
+                      backgroundColor: Colors.white,
+                      radius: 40.0,
+                      child: getImageForInterventionType(types[0]),
+                    ),
+                    SizedBox(width: 20),
+                    // Render the appropriate title based on the first type
+                    Text(
+                      getTitleForInterventionType(types[0]),
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // Display the list of interventions for this type
+              Column(
+                children: interventions.map((intervention) {
+                  return ListTile(
+                    leading: Icon(
+                      Icons.arrow_forward_ios,
+                      size: 16,
+                      color: Color(0xFFA28275),
+                    ),
+                    title: Text(
+                      //  intervention['title']['rendered'],
+                      intervention['name'],
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    onTap: () {
+                      // Navigate to SingleBlogPage passing the postId
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SingleInterventionPage(
+                              intervention['id'],
+                            intervention['title'],
+                          ),  // Make sure this constructor expects a postId
+                        ),
+                      );
+                    },
+                  );
+                }).toList(),
               ),
             ],
           );

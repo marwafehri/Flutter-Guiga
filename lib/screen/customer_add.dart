@@ -24,6 +24,8 @@ class _CustomerAddPageState extends State<CustomerAddPage> {
   var bloc;
   final FlutterSecureStorage secureStorage = FlutterSecureStorage();
 
+  bool _isPasswordVisible = false;
+
   @override
   void initState() {
     super.initState();
@@ -151,6 +153,37 @@ class _CustomerAddPageState extends State<CustomerAddPage> {
             if (val != null) {
               customerBasicInformation['email'] = val;
               customerAddressInformation['email'] = val;
+            }
+          },
+        ),
+        new TextFormField(
+          decoration: InputDecoration(
+            labelText: 'Password',
+            hintText: 'Enter your password',
+            suffixIcon: IconButton(
+              icon: Icon(
+                _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+              ),
+              onPressed: () {
+                setState(() {
+                  _isPasswordVisible = !_isPasswordVisible;  // Toggle the password visibility
+                });
+              },
+            ),
+          ),
+          obscureText: !_isPasswordVisible,  // Toggle visibility based on the state variable
+          keyboardType: TextInputType.visiblePassword,
+          validator: (String? val) {
+            if (val == null || val.isEmpty) {
+              return 'Password cannot be empty';
+            } else if (val.length < 6) {
+              return 'Password must be at least 6 characters';
+            }
+            return null;  // Return null if the validation passes
+          },
+          onSaved: (String? val) {
+            if (val != null) {
+              customerBasicInformation['password'] = val;
             }
           },
         ),
@@ -383,11 +416,13 @@ class _CustomerAddPageState extends State<CustomerAddPage> {
       bloc.createCustomer(
           customerBasicInformation, customerAddressInformation, _scaffoldKey, context)
           .then((response) {
+        print("_validateInputs");
         print(response);
         if (response != null && response.containsKey('id')) {
           // Store user data securely
           secureStorage.write(key: 'user_id', value: response['id'].toString());
           secureStorage.write(key: 'user_email', value: response['email']);
+          secureStorage.write(key: 'password', value: response['password']);
 
           // Customer created successfully, navigate to DashboardPage
           Navigator.pushReplacement(
@@ -429,6 +464,7 @@ class _CustomerAddPageState extends State<CustomerAddPage> {
     await storage.write(key: 'first_name', value: userData['billing']['first_name']);
     await storage.write(key: 'last_name', value: userData['billing']['last_name']);
     await storage.write(key: 'email', value: userData['email']);
+    await storage.write(key: 'password', value: userData['password']);
     await storage.write(key: 'phone', value: userData['billing']['phone']);
     await storage.write(key: 'role', value: userData['role']);
 

@@ -13,8 +13,9 @@ import 'package:woocommerce_app/bloc/bottom_app_bar.dart';
 
 class SingleInterventionPage extends StatefulWidget {
   var postId;  // Order place to this customer
+  final postTitle;
 
-  SingleInterventionPage(this.postId);
+  SingleInterventionPage(this.postId, this.postTitle);
   @override
   _SingleInterventionPageState createState() => _SingleInterventionPageState();
 }
@@ -61,7 +62,7 @@ class _SingleInterventionPageState extends State<SingleInterventionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(""),
+        title: Text(widget.postTitle ?? "Interventions"),
         backgroundColor: Color(0xFFe8e0d7),
       ),
       floatingActionButton: MenuBarr(),

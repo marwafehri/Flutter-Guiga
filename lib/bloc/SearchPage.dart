@@ -79,7 +79,7 @@ class CustomSearchDelegate extends SearchDelegate<String> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => SingleInterventionPage(result['id']),  // Ensure this constructor expects an ID
+                builder: (context) => SingleInterventionPage(result['id'],result['name']),  // Ensure this constructor expects an ID
               ),
             );
           },
