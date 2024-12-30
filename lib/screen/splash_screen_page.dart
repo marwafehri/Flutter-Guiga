@@ -2,16 +2,40 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'home_page.dart';
 import 'package:woocommerce_app/screen/login_page.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:woocommerce_app/screen/forget-login_page.dart';
 
 
 
 class SplashScreen extends StatefulWidget {
   @override
   _SplashScreenState createState() => _SplashScreenState();
+
+  Future<void> clearUserInformation(BuildContext context) async {
+    final storage = FlutterSecureStorage();
+
+    // Delete stored values
+    await storage.delete(key: 'userId');
+    await storage.delete(key: 'username');
+    await storage.delete(key: 'email');
+    await storage.delete(key: 'phone');
+    await storage.delete(key: 'first_name');
+    await storage.delete(key: 'last_name');
+    await storage.delete(key: 'billing_naissance');
+    await storage.delete(key: 'billing_sexe');
+    await storage.delete(key: 'role');
+
+    // Navigate to the home page
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => HomePage()),
+    );
+  }
 }
 
 class _SplashScreenState extends State<SplashScreen> {
   late bool _isHomePageReady;
+
   @override
   void initState() {
     super.initState();
@@ -38,6 +62,7 @@ class _SplashScreenState extends State<SplashScreen> {
       );
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +117,8 @@ class _SplashScreenState extends State<SplashScreen> {
                     )
                   ],
                 ),
-              )
+              ),
+
             ],
           )
         ],

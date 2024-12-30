@@ -89,7 +89,7 @@ class _MyAppState extends State<MyApp> {
           primarySwatch: Colors.red,
         ),
          //home: OnboardingScreen(),
-        home: HomePage(),
+        home: OnboardingScreen(),
 
         //home: OnboardingScreen(),
       );

@@ -181,7 +181,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               const SizedBox(
-                height: 480,
+                height: 450,
               ),
               Text(
                 'Témoignages et Résultats',
@@ -204,7 +204,34 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   fontWeight: FontWeight.w600,
                 ),
               ),
+              const SizedBox(
+                height: 20,
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  // Action pour rediriger vers HomePage()
+                  Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                      builder: (context) => HomePage(),
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFFD3546E), // Couleur personnalisée
+                  padding: const EdgeInsets.symmetric(horizontal: 75, vertical: 15),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(3), // Applique un border radius de 3
+                  ),
+                ),
+                child: const Text(
+                  "Passer cette étape",
+                  style: TextStyle(fontSize: 18, color: Colors.white),
+                ),
+              )
+
             ],
+
           ),
         ),
       ],
