@@ -59,6 +59,8 @@ dependencies:
   firebase_core: ^2.27.0
   firebase_messaging: ^14.7.19
   foundation: ^0.0.5
+  flutter_carousel_media_slider: ^0.0.2
+  youtube_player_flutter: ^9.0.4
   #flutter_inappwebview: ^6.0.0
  # booking_calendar: ^1.1.10
  # webview_flutter_upload: ^0.2.0

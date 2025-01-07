@@ -25,6 +25,10 @@ import 'package:woocommerce_app/screen/single_category_page.dart';
 import 'package:woocommerce_app/screen/sejour_page.dart';
 import 'package:woocommerce_app/bloc/menu_bar.dart';
 import 'package:woocommerce_app/bloc/bottom_app_bar.dart';
+import 'package:woocommerce_app/bloc/video_bloc.dart';
+import 'dart:ui' as ui;
+import 'package:webview_flutter/webview_flutter.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -76,7 +80,9 @@ class HomePagePageState extends State<HomePage> {
   void onIconTapped(int index) {
     print('Icon $index tapped');
   }
-
+ // video
+  final VideosBloc videosBloc = VideosBloc();
+  Future<List<Map<String, dynamic>>?>? futureVideos;
 
   @override
   void initState() {
@@ -109,6 +115,9 @@ class HomePagePageState extends State<HomePage> {
 
       });
     });
+
+    futureVideos = videosBloc.fetchVideoLink(perPage: 10);
+
   }
   @override
   /*void dispose() {
@@ -802,6 +811,7 @@ class HomePagePageState extends State<HomePage> {
                 ),
               ),
             ),
+
            /* Container(
               color: Color(0xFFffffff),
               padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
@@ -952,6 +962,117 @@ class HomePagePageState extends State<HomePage> {
                 ),
               ),
             ),
+            FutureBuilder<List<Map<String, dynamic>>?>(
+              future: futureVideos,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Center(child: Text('No videos available'));
+                } else {
+                  final List<Map<String, dynamic>> videos = snapshot.data!;
+
+                  // Filtrer les vidéos avec URLs valides
+                  final filteredVideos = videos.where((video) {
+                    return video['urlvideo'] != null || video['acf']?['lien_video'] != null;
+                  }).toList();
+                  print("filteredVideos $filteredVideos");
+
+                  // Supprimer les doublons en se basant sur l'URL
+                  final uniqueVideos = <String, Map<String, dynamic>>{};
+                  for (var video in filteredVideos) {
+                    String? url = video['urlvideo'] ?? video['acf']?['lien_video'];
+                    if (url != null) {
+                      uniqueVideos[url] = video; // Utiliser l'URL comme clé
+                    }
+                  }
+
+                  return GridView.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2, // 2 colonnes
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                      childAspectRatio: 16 / 9, // Ratio pour respecter le format vidéo 16:9
+                    ),
+                    padding: EdgeInsets.all(10),
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(), // Empêche le scroll interne
+                    itemCount: uniqueVideos.length > 4 ? 4 : uniqueVideos.length, // Limiter à 4 vidéos
+                    itemBuilder: (context, index) {
+                      final video = uniqueVideos.values.toList().reversed.toList()[index]; // Prendre les derniers éléments
+                      final String? url = video['urlvideo'] ?? video['acf']?['lien_video'];
+
+                      if (url == null) return SizedBox.shrink();
+
+                      // Extraire l'ID de la vidéo YouTube
+                      final String? videoId = YoutubePlayer.convertUrlToId(url);
+                      if (videoId == null) return SizedBox.shrink();
+
+                      // URL de la miniature YouTube
+                      final String thumbnailUrl = "https://img.youtube.com/vi/$videoId/0.jpg";
+
+                      return GestureDetector(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              final YoutubePlayerController _controller = YoutubePlayerController(
+                                initialVideoId: videoId,
+                                flags: YoutubePlayerFlags(
+                                  autoPlay: true,
+                                  mute: false,
+                                ),
+                              );
+
+                              return Dialog(
+                                backgroundColor: Colors.transparent,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: YoutubePlayer(
+                                    controller: _controller,
+                                    showVideoProgressIndicator: true,
+                                    progressIndicatorColor: Colors.red,
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Stack(
+                            children: [
+                              // Afficher la miniature
+                              Image.network(
+                                thumbnailUrl,
+                                width: double.infinity,
+                                height: double.infinity,
+                                fit: BoxFit.cover,
+                              ),
+                              // Icône de lecture au-dessus de l'image
+                              Center(
+                                child: Icon(
+                                  Icons.play_circle_fill,
+                                  color: Colors.white,
+                                  size: 50,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  );
+
+                }
+              },
+            ),
+
+
+
+
             // Second Container with Red Background Color
             Container(
               color: Color(0xFFe8e0d7),
@@ -2964,6 +3085,7 @@ class HomePagePageState extends State<HomePage> {
                   ),
                 ),
               ),*/
+
             ],
           );
         },

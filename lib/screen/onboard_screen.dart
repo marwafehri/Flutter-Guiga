@@ -219,7 +219,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFFD3546E), // Couleur personnalisée
-                  padding: const EdgeInsets.symmetric(horizontal: 75, vertical: 15),
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(3), // Applique un border radius de 3
                   ),
